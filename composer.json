@@ -1,0 +1,22 @@
+{
+    "name": "bushbaby/doctrine-reconnect",
+    "description": "Zend Framework 2 module which attempts to reconnect when the database has 'gone away'",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "zf2",
+        "doctrine"
+    ],
+    "homepage": "https://github.com/bushbaby/BsbDoctrineReconnect",
+    "require": {
+        "doctrine/doctrine-orm-module":          "~0.6"
+    },
+    "autoload": {
+        "psr-0": {
+            "BsbDoctrineReconnect\\": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}
