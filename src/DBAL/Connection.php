@@ -9,9 +9,11 @@ use Doctrine\DBAL\Connection as DBALConnection;
 use BsbDoctrineReconnect\DBAL\Driver\PDOMySql\Driver;
 use Doctrine\DBAL\DBALException;
 
-
 class Connection extends DBALConnection
 {
+    /**
+     * @var int
+     */
     protected $reconnectAttempts = 0;
 
     /**
@@ -23,10 +25,10 @@ class Connection extends DBALConnection
         Configuration $config = null,
         EventManager $eventManager = null
     ) {
-        if (isset($params['driverOptions']['x_reconnect_attempts']) && method_exists($driver, 'getReconnectExceptions')) {
-            // sanity check: 0 if no exceptions are available
-            $reconnectExceptions     = $driver->getReconnectExceptions();
-            $this->reconnectAttempts = empty($reconnectExceptions) ? 0 : (int) $params['driverOptions']['x_reconnect_attempts'];
+        if (method_exists($driver, 'getReconnectExceptions')) {
+            if (count($driver->getReconnectExceptions()) && isset($params['driverOptions']['x_reconnect_attempts'])) {
+                $this->reconnectAttempts = (int) $params['driverOptions']['x_reconnect_attempts'];
+            }
         }
 
         parent::__construct($params, $driver, $config, $eventManager);
@@ -45,7 +47,6 @@ class Connection extends DBALConnection
             try {
                 $stmt = parent::executeQuery($query, $params, $types);
             } catch (DBALException $e) {
-
                 error_log("");
                 error_log("      ,--.!,");
                 error_log("   __/   -*-");
@@ -191,7 +192,11 @@ class Connection extends DBALConnection
      */
     public function validateReconnectAttempt(DBALException $e, $attempt)
     {
-        if ($this->getTransactionNestingLevel() < 1 && $this->reconnectAttempts && $attempt < $this->reconnectAttempts) {
+        if (!$this->getTransactionNestingLevel()) {
+            return false;
+        }
+
+        if ($this->reconnectAttempts && $attempt < $this->reconnectAttempts) {
             $reconnectExceptions = $this->_driver->getReconnectExceptions();
             $message             = $e->getMessage();
 

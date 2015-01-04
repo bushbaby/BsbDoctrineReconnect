@@ -11,27 +11,27 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * @var string
      */
-    private $_sql;
+    private $sql;
 
     /**
      * @var \Doctrine\DBAL\Statement
      */
-    private $_stmt;
+    private $stmt;
 
     /**
      * @var Connection
      */
-    private $_conn;
+    private $conn;
 
     /**
      * @var array binding values
      */
-    private $_values = array();
+    private $values = array();
 
     /**
      * @var array binding parameters
      */
-    private $_params = array();
+    private $params = array();
 
     /**
      * @param            string $sql
@@ -39,21 +39,21 @@ class Statement implements \IteratorAggregate, DriverStatement
      */
     public function __construct($sql, Connection $conn)
     {
-        $this->_sql  = $sql;
-        $this->_conn = $conn;
+        $this->sql  = $sql;
+        $this->conn = $conn;
 
         $this->createStatement();
     }
 
     private function createStatement()
     {
-        $this->_stmt = $this->_conn->prepareUnwrapped($this->_sql);
+        $this->stmt = $this->conn->prepareUnwrapped($this->sql);
 
-        foreach ($this->_values as $args) {
+        foreach ($this->values as $args) {
             $this->bindValue($args[0], $args[1], $args[2]);
         }
 
-        foreach ($this->_params as $args) {
+        foreach ($this->params as $args) {
             $this->bindParam($args[0], $args[1], $args[2]);
         }
     }
@@ -68,10 +68,10 @@ class Statement implements \IteratorAggregate, DriverStatement
             $retry = false;
 
             try {
-                $stmt = $this->_stmt->execute($params);
+                $stmt = $this->stmt->execute($params);
             } catch (DBALException $e) {
-                if ($this->_conn->validateReconnectAttempt($e, $attempt)) {
-                    $this->_conn->close();
+                if ($this->conn->validateReconnectAttempt($e, $attempt)) {
+                    $this->conn->close();
                     $this->createStatement();
                     $attempt++;
                     $retry = true;
@@ -86,56 +86,56 @@ class Statement implements \IteratorAggregate, DriverStatement
 
     public function bindValue($param, $value, $type = null)
     {
-        $this->_values[$param] = array($param, $value, $type);
+        $this->values[$param] = array($param, $value, $type);
 
-        return $this->_stmt->bindValue($param, $value, $type);
+        return $this->stmt->bindValue($param, $value, $type);
     }
 
     public function bindParam($column, &$variable, $type = PDO::PARAM_STR, $length = null)
     {
-        $this->_values[$column] = array($column, &$variable, $type);
+        $this->values[$column] = array($column, &$variable, $type);
 
-        return $this->_stmt->bindParam($column, $variable, $type);
+        return $this->stmt->bindParam($column, $variable, $type);
     }
 
     public function closeCursor()
     {
-        return $this->_stmt->closeCursor();
+        return $this->stmt->closeCursor();
     }
 
     public function columnCount()
     {
-        return $this->_stmt->columnCount();
+        return $this->stmt->columnCount();
     }
 
     public function errorCode()
     {
-        return $this->_stmt->errorCode();
+        return $this->stmt->errorCode();
     }
 
     public function errorInfo()
     {
-        return $this->_stmt->errorInfo();
+        return $this->stmt->errorInfo();
     }
 
     public function fetch($fetchStyle = PDO::FETCH_BOTH)
     {
-        return $this->_stmt->fetch($fetchStyle);
+        return $this->stmt->fetch($fetchStyle);
     }
 
     public function fetchAll($fetchStyle = PDO::FETCH_BOTH)
     {
-        return $this->_stmt->fetchAll($fetchStyle);
+        return $this->stmt->fetchAll($fetchStyle);
     }
 
     public function fetchColumn($columnIndex = 0)
     {
-        return $this->_stmt->fetchColumn($columnIndex);
+        return $this->stmt->fetchColumn($columnIndex);
     }
 
     public function rowCount()
     {
-        return $this->_stmt->rowCount();
+        return $this->stmt->rowCount();
     }
 
     /**
@@ -165,6 +165,6 @@ class Statement implements \IteratorAggregate, DriverStatement
      */
     public function getIterator()
     {
-        return $this->_stmt;
+        return $this->stmt;
     }
 }
