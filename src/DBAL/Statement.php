@@ -1,9 +1,10 @@
 <?php
+
 namespace BsbDoctrineReconnect\DBAL;
 
-use PDO,
-    Doctrine\DBAL\Driver\Statement as DriverStatement;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Statement as DriverStatement;
+use PDO;
 
 class Statement implements \IteratorAggregate, DriverStatement
 {
@@ -15,17 +16,20 @@ class Statement implements \IteratorAggregate, DriverStatement
 
     public function __construct($sql, Connection $conn)
     {
-        $this->_sql = $sql;
+        $this->_sql  = $sql;
         $this->_conn = $conn;
+
         $this->createStatement();
     }
 
     private function createStatement()
     {
         $this->_stmt = $this->_conn->prepareUnwrapped($this->_sql);
+
         foreach ($this->_values as $args) {
             $this->bindValue($args[0], $args[1], $args[2]);
         }
+
         foreach ($this->_params as $args) {
             $this->bindParam($args[0], $args[1], $args[2]);
         }
@@ -33,11 +37,13 @@ class Statement implements \IteratorAggregate, DriverStatement
 
     public function execute($params = null)
     {
-        $stmt = null;
+        $stmt    = null;
         $attempt = 0;
-        $retry = true;
+        $retry   = true;
+
         while ($retry) {
             $retry = false;
+
             try {
                 $stmt = $this->_stmt->execute($params);
             } catch (DBALException $e) {
@@ -51,18 +57,21 @@ class Statement implements \IteratorAggregate, DriverStatement
                 }
             }
         }
+
         return $stmt;
     }
 
     public function bindValue($param, $value, $type = null)
     {
         $this->_values[$param] = array($param, $value, $type);
+
         return $this->_stmt->bindValue($param, $value, $type);
     }
 
     public function bindParam($column, &$variable, $type = PDO::PARAM_STR, $length = null)
     {
         $this->_values[$column] = array($column, &$variable, $type);
+
         return $this->_stmt->bindParam($column, $variable, $type);
     }
 

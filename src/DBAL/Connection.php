@@ -2,11 +2,11 @@
 
 namespace BsbDoctrineReconnect\DBAL;
 
-use Doctrine\DBAL\Configuration,
-    Doctrine\DBAL\Driver,
-    Doctrine\DBAL\Connection as DBALConnection,
-    Doctrine\Common\EventManager,
-    Doctrine\DBAL\Cache\QueryCacheProfile;
+use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Cache\QueryCacheProfile;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\Connection as DBALConnection;
+use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\DBALException;
 
 
@@ -14,21 +14,32 @@ class Connection extends DBALConnection
 {
     protected $reconnectAttempts = 0;
 
-    public function __construct(array $params, Driver $driver, Configuration $config = null, EventManager $eventManager = null)
-    {
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(
+        array $params,
+        Driver $driver,
+        Configuration $config = null,
+        EventManager $eventManager = null
+    ) {
         if (isset($params['driverOptions']['x_reconnect_attempts']) && method_exists($driver, 'getReconnectExceptions')) {
             // sanity check: 0 if no exceptions are available
-            $reconnectExceptions = $driver->getReconnectExceptions();
+            $reconnectExceptions     = $driver->getReconnectExceptions();
             $this->reconnectAttempts = empty($reconnectExceptions) ? 0 : (int) $params['driverOptions']['x_reconnect_attempts'];
         }
+
         parent::__construct($params, $driver, $config, $eventManager);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function executeQuery($query, array $params = array(), $types = array(), QueryCacheProfile $qcp = null)
     {
-        $stmt = null;
+        $stmt    = null;
         $attempt = 0;
-        $retry = true;
+        $retry   = true;
         while ($retry) {
             $retry = false;
             try {
@@ -66,15 +77,19 @@ class Connection extends DBALConnection
                 }
             }
         }
+
         return $stmt;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function query()
     {
-        $stmt = null;
-        $args = func_get_args();
+        $stmt    = null;
+        $args    = func_get_args();
         $attempt = 0;
-        $retry = true;
+        $retry   = true;
         while ($retry) {
             $retry = false;
             try {
@@ -94,8 +109,6 @@ class Connection extends DBALConnection
                         break;
                     default:
                         $stmt = parent::query();
-                    // no break
-
                 }
 
             } catch (DBALException $e) {
@@ -109,14 +122,18 @@ class Connection extends DBALConnection
                 }
             }
         }
+
         return $stmt;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function executeUpdate($query, array $params = array(), array $types = array())
     {
-        $stmt = null;
+        $stmt    = null;
         $attempt = 0;
-        $retry = true;
+        $retry   = true;
         while ($retry) {
             $retry = false;
             try {
@@ -131,14 +148,22 @@ class Connection extends DBALConnection
                 }
             }
         }
+
         return $stmt;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function prepare($sql)
     {
         return $this->prepareWrapped($sql);
     }
 
+    /**
+     * @param $sql
+     * @return Statement
+     */
     protected function prepareWrapped($sql)
     {
         // returns a reconnect-wrapper for Statements
@@ -167,7 +192,8 @@ class Connection extends DBALConnection
     {
         if ($this->getTransactionNestingLevel() < 1 && $this->reconnectAttempts && $attempt < $this->reconnectAttempts) {
             $reconnectExceptions = $this->_driver->getReconnectExceptions();
-            $message = $e->getMessage();
+            $message             = $e->getMessage();
+
             if (!empty($reconnectExceptions)) {
                 foreach ($reconnectExceptions as $reconnectException) {
                     if (strpos($message, $reconnectException) !== false) {
@@ -176,6 +202,7 @@ class Connection extends DBALConnection
                 }
             }
         }
+
         return false;
     }
 }
