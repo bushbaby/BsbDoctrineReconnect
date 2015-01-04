@@ -46,7 +46,7 @@ return array(
 
 ## Test
 
-You can manually test this actually works by connecting to mysql from the cli and killing the appropiate connection;
+You can manually test this actually works by connecting to mysql from the cli and killing the appropriate connection;
 
 ```mysql
 mysql> SHOW PROCESSLIST;
