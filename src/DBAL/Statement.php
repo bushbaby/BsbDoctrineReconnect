@@ -3,6 +3,7 @@ namespace BsbDoctrineReconnect\DBAL;
 
 use PDO,
     Doctrine\DBAL\Driver\Statement as DriverStatement;
+use Doctrine\DBAL\DBALException;
 
 class Statement implements \IteratorAggregate, DriverStatement
 {
@@ -39,7 +40,7 @@ class Statement implements \IteratorAggregate, DriverStatement
             $retry = false;
             try {
                 $stmt = $this->_stmt->execute($params);
-            } catch (\Exception $e) {
+            } catch (DBALException $e) {
                 if ($this->_conn->validateReconnectAttempt($e, $attempt)) {
                     $this->_conn->close();
                     $this->createStatement();

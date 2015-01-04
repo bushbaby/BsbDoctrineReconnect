@@ -2,6 +2,7 @@
 
 namespace BsbDoctrineReconnect\DBAL\Driver\PDOMySql;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\PDOMySql\Driver as PDOMySqlDriver;
 
 class Driver extends PDOMySqlDriver
@@ -15,9 +16,9 @@ class Driver extends PDOMySqlDriver
         );
     }
 
-    public function shouldStall(\Exception $x)
+    public function shouldStall(DBALException $e)
     {
-        return stristr($x->getMessage(), 'php_network_getaddresses') !== false;
+        return stristr($e->getMessage(), 'php_network_getaddresses') !== false;
     }
 
 }

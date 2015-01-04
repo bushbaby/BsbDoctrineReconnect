@@ -7,6 +7,7 @@ use Doctrine\DBAL\Configuration,
     Doctrine\DBAL\Connection as DBALConnection,
     Doctrine\Common\EventManager,
     Doctrine\DBAL\Cache\QueryCacheProfile;
+use Doctrine\DBAL\DBALException;
 
 
 class Connection extends DBALConnection
@@ -32,7 +33,7 @@ class Connection extends DBALConnection
             $retry = false;
             try {
                 $stmt = parent::executeQuery($query, $params, $types);
-            } catch (\Exception $e) {
+            } catch (DBALException $e) {
 
                 error_log("");
                 error_log("      ,--.!,");
@@ -96,8 +97,8 @@ class Connection extends DBALConnection
                     // no break
 
                 }
-            } catch (\Exception $e) {
 
+            } catch (DBALException $e) {
                 if ($this->validateReconnectAttempt($e, $attempt)) {
                     $this->close();
                     $attempt++;
@@ -120,7 +121,7 @@ class Connection extends DBALConnection
             $retry = false;
             try {
                 $stmt = parent::executeUpdate($query, $params, $types);
-            } catch (\Exception $e) {
+            } catch (DBALException $e) {
                 if ($this->validateReconnectAttempt($e, $attempt)) {
                     $this->close();
                     $attempt++;
@@ -157,7 +158,12 @@ class Connection extends DBALConnection
         return parent::prepare($sql);
     }
 
-    public function validateReconnectAttempt(\Exception $e, $attempt)
+    /**
+     * @param DBALException $e
+     * @param               $attempt
+     * @return bool
+     */
+    public function validateReconnectAttempt(DBALException $e, $attempt)
     {
         if ($this->getTransactionNestingLevel() < 1 && $this->reconnectAttempts && $attempt < $this->reconnectAttempts) {
             $reconnectExceptions = $this->_driver->getReconnectExceptions();
