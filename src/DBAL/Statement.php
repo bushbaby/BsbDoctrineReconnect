@@ -9,7 +9,15 @@ use PDO;
 class Statement implements \IteratorAggregate, DriverStatement
 {
     private $_sql;
+
+    /**
+     * @var \Doctrine\DBAL\Statement
+     */
     private $_stmt;
+
+    /**
+     * @var Connection
+     */
     private $_conn;
     private $_values = array();
     private $_params = array();
@@ -87,7 +95,7 @@ class Statement implements \IteratorAggregate, DriverStatement
 
     public function errorCode()
     {
-        return $this->_stmt->errorCount();
+        return $this->_stmt->errorCode();
     }
 
     public function errorInfo()
@@ -142,6 +150,6 @@ class Statement implements \IteratorAggregate, DriverStatement
      */
     public function getIterator()
     {
-        return $this->stmt;
+        return $this->_stmt;
     }
 }

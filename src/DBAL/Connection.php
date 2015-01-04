@@ -161,7 +161,7 @@ class Connection extends DBALConnection
     }
 
     /**
-     * @param $sql
+     * @param string $sql
      * @return Statement
      */
     protected function prepareWrapped($sql)
@@ -185,7 +185,7 @@ class Connection extends DBALConnection
 
     /**
      * @param DBALException $e
-     * @param               $attempt
+     * @param               integer $attempt
      * @return bool
      */
     public function validateReconnectAttempt(DBALException $e, $attempt)

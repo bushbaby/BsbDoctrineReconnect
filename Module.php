@@ -2,8 +2,6 @@
 
 namespace BsbDoctrineReconnect;
 
-use Zend\Loader;
-use Zend\Console\Adapter\AdapterInterface;
 use Zend\ModuleManager\Feature;
 
 /**
