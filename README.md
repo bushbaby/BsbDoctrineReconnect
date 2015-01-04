@@ -1,10 +1,16 @@
 # BsbDoctrineReconnect
 
-Zend Framework 2 module which attempts to reconnect when the database has 'gone away'.
+Small Zend Framework 2 module which attempts to reconnect when the database has 'gone away'.
 
-It does this by overriding a few doctrine DBAL Classes via the configuration provided by the DoctrineORMModule.
+[![Latest Stable Version](https://poser.pugx.org/bushbaby/doctrine-reconnect/v/stable.svg)](https://packagist.org/packages/bushbaby/doctrine-reconnect) [![Total Downloads](https://poser.pugx.org/bushbaby/doctrine-reconnect/downloads.svg)](https://packagist.org/packages/bushbaby/doctrine-reconnect) [![Latest Unstable Version](https://poser.pugx.org/bushbaby/doctrine-reconnect/v/unstable.svg)](https://packagist.org/packages/bushbaby/doctrine-reconnect) [![License](https://poser.pugx.org/bushbaby/doctrine-reconnect/license.svg)](https://packagist.org/packages/bushbaby/doctrine-reconnect)
 
-I did not invent this method. I just liked it and thought it deserved a module so it can be reused easily. Credits ought to go to [circlical](http://circlical.com/blog/2013/9/12/mysql-server-has-gone-away-atop-doctrine2-and-zend-framework-2).
+[![Code Coverage](https://scrutinizer-ci.com/g/bushbaby/BsbDoctrineReconnect/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/bushbaby/BsbDoctrineReconnect/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bushbaby/BsbDoctrineReconnect/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bushbaby/BsbDoctrineReconnect/?branch=master)
+[![Dependency Status](https://www.versioneye.com/user/projects/54a942ac27b014005400052a/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54a942ac27b014005400052a)
+
+In order to do this it overrides Doctrine DBAL Driver provided by the DoctrineORMModule.
+
+I did not invent this method. I just liked it and thought it deserved a zf2 module so it can be reused easily. Credits ought to go to [circlical](http://circlical.com/blog/2013/9/12/mysql-server-has-gone-away-atop-doctrine2-and-zend-framework-2).
 
 ## Installation
 
@@ -58,4 +64,4 @@ Query OK, 0 rows affected (0.00 sec)
 
 ## Known limitations
 
-This method only works for statements outside of transactions.
+This method only works for non transactional statements.
