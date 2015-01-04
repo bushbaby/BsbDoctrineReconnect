@@ -12,11 +12,8 @@
         "doctrine/doctrine-orm-module":          "~0.6"
     },
     "autoload": {
-        "psr-0": {
+        "psr-4": {
             "BsbDoctrineReconnect\\": "src/"
-        },
-        "classmap": [
-            "./Module.php"
-        ]
+        }
     }
 }
