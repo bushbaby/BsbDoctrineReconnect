@@ -176,6 +176,7 @@ class Connection extends DBALConnection
      * needs to be public for access from the Statement-class
      *
      * @deprecated
+     * @param string $sql
      */
     public function prepareUnwrapped($sql)
     {
