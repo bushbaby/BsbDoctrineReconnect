@@ -11,6 +11,9 @@
     "require": {
         "doctrine/doctrine-orm-module":          "~0.6"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "~2.0"
+    },
     "autoload": {
         "psr-4": {
             "BsbDoctrineReconnect\\": "src/"
