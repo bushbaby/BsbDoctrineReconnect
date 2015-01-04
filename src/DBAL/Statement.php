@@ -8,6 +8,9 @@ use PDO;
 
 class Statement implements \IteratorAggregate, DriverStatement
 {
+    /**
+     * @var string
+     */
     private $_sql;
 
     /**
@@ -19,9 +22,21 @@ class Statement implements \IteratorAggregate, DriverStatement
      * @var Connection
      */
     private $_conn;
+
+    /**
+     * @var array binding values
+     */
     private $_values = array();
+
+    /**
+     * @var array binding parameters
+     */
     private $_params = array();
 
+    /**
+     * @param            string $sql
+     * @param Connection $conn
+     */
     public function __construct($sql, Connection $conn)
     {
         $this->_sql  = $sql;
