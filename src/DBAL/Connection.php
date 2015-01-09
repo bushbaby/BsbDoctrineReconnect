@@ -6,7 +6,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection as DBALConnection;
-use BsbDoctrineReconnect\DBAL\Driver\PDOMySql\Driver;
+use Doctrine\DBAL\Driver\PDOMySql\Driver;
 use Doctrine\DBAL\DBALException;
 
 class Connection extends DBALConnection
