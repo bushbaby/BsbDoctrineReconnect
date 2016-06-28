@@ -6,9 +6,14 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection as DBALConnection;
-use Doctrine\DBAL\Driver\PDOMySql\Driver;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\PDOMySql\Driver;
 
+/**
+ * Class Connection
+ *
+ * @package BsbDoctrineReconnect\DBAL
+ */
 class Connection extends DBALConnection
 {
     /**
@@ -37,7 +42,7 @@ class Connection extends DBALConnection
     /**
      * {@inheritdoc}
      */
-    public function executeQuery($query, array $params = array(), $types = array(), QueryCacheProfile $qcp = null)
+    public function executeQuery($query, array $params = [], $types = [], QueryCacheProfile $qcp = null)
     {
         $stmt    = null;
         $attempt = 0;
@@ -111,13 +116,11 @@ class Connection extends DBALConnection
                     default:
                         $stmt = parent::query();
                 }
-
             } catch (DBALException $e) {
                 if ($this->validateReconnectAttempt($e, $attempt)) {
                     $this->close();
                     $attempt++;
                     $retry = true;
-
                 } else {
                     throw $e;
                 }
@@ -130,7 +133,7 @@ class Connection extends DBALConnection
     /**
      * {@inheritdoc}
      */
-    public function executeUpdate($query, array $params = array(), array $types = array())
+    public function executeUpdate($query, array $params = [], array $types = [])
     {
         $stmt    = null;
         $attempt = 0;
@@ -186,7 +189,7 @@ class Connection extends DBALConnection
     }
 
     /**
-     * @param DBALException $e
+     * @param DBALException         $e
      * @param               integer $attempt
      * @return bool
      */

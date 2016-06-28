@@ -1,18 +1,18 @@
 <?php
 
-return array(
-    'doctrine' => array(
-        'connection' => array(
-            'orm_default' => array(
-                'driverClass' => 'BsbDoctrineReconnect\DBAL\Driver\PDOMySql\Driver',
-                'wrapperClass' => 'BsbDoctrineReconnect\DBAL\Connection',
+return [
+    'doctrine' => [
+        'connection' => [
+            'orm_default' => [
+                'driverClass'  => \BsbDoctrineReconnect\DBAL\Driver\PDOMySql\Driver::class,
+                'wrapperClass' => \BsbDoctrineReconnect\DBAL\Connection::class,
 
-                'params' => array(
-                    'driverOptions' => array(
+                'params' => [
+                    'driverOptions' => [
                         'x_reconnect_attempts' => 10,
-                    ),
-                )
-            ),
-        ),
-    ),
-);
+                    ],
+                ]
+            ],
+        ],
+    ],
+];

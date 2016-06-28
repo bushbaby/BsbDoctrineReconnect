@@ -4,9 +4,15 @@ namespace BsbDoctrineReconnect\DBAL;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Statement as DriverStatement;
+use IteratorAggregate;
 use PDO;
 
-class Statement implements \IteratorAggregate, DriverStatement
+/**
+ * Class Statement
+ *
+ * @package BsbDoctrineReconnect\DBAL
+ */
+class Statement implements IteratorAggregate, DriverStatement
 {
     /**
      * @var string
@@ -26,16 +32,16 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * @var array binding values
      */
-    private $values = array();
+    private $values = [];
 
     /**
      * @var array binding parameters
      */
-    private $params = array();
+    private $params = [];
 
     /**
      * @param            string $sql
-     * @param Connection $conn
+     * @param Connection        $conn
      */
     public function __construct($sql, Connection $conn)
     {
@@ -45,6 +51,9 @@ class Statement implements \IteratorAggregate, DriverStatement
         $this->createStatement();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     private function createStatement()
     {
         $this->stmt = $this->conn->prepareUnwrapped($this->sql);
@@ -58,6 +67,11 @@ class Statement implements \IteratorAggregate, DriverStatement
         }
     }
 
+    /**
+     * @param null $params
+     * @return bool|null
+     * @throws DBALException
+     */
     public function execute($params = null)
     {
         $stmt    = null;
@@ -84,55 +98,95 @@ class Statement implements \IteratorAggregate, DriverStatement
         return $stmt;
     }
 
+    /**
+     * @param mixed $param
+     * @param mixed $value
+     * @param null  $type
+     * @return bool
+     */
     public function bindValue($param, $value, $type = null)
     {
-        $this->values[$param] = array($param, $value, $type);
+        $this->values[$param] = [$param, $value, $type];
 
         return $this->stmt->bindValue($param, $value, $type);
     }
 
+    /**
+     * @param mixed    $column
+     * @param mixed    $variable
+     * @param int|null $type
+     * @param null     $length
+     * @return bool
+     */
     public function bindParam($column, &$variable, $type = PDO::PARAM_STR, $length = null)
     {
-        $this->values[$column] = array($column, &$variable, $type);
+        $this->values[$column] = [$column, &$variable, $type];
 
         return $this->stmt->bindParam($column, $variable, $type);
     }
 
+    /**
+     * @return bool
+     */
     public function closeCursor()
     {
         return $this->stmt->closeCursor();
     }
 
+    /**
+     * @return int
+     */
     public function columnCount()
     {
         return $this->stmt->columnCount();
     }
 
+    /**
+     * @return string
+     */
     public function errorCode()
     {
         return $this->stmt->errorCode();
     }
 
+    /**
+     * @return array
+     */
     public function errorInfo()
     {
         return $this->stmt->errorInfo();
     }
 
+    /**
+     * @param int|null $fetchStyle
+     * @return mixed
+     */
     public function fetch($fetchStyle = PDO::FETCH_BOTH)
     {
         return $this->stmt->fetch($fetchStyle);
     }
 
+    /**
+     * @param int|null $fetchStyle
+     * @return array
+     */
     public function fetchAll($fetchStyle = PDO::FETCH_BOTH)
     {
         return $this->stmt->fetchAll($fetchStyle);
     }
 
+    /**
+     * @param int $columnIndex
+     * @return mixed
+     */
     public function fetchColumn($columnIndex = 0)
     {
         return $this->stmt->fetchColumn($columnIndex);
     }
 
+    /**
+     * @return int
+     */
     public function rowCount()
     {
         return $this->stmt->rowCount();
