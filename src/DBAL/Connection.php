@@ -77,6 +77,7 @@ class Connection extends DBALConnection implements DriverConnection
                         sleep(5);
                     }
 
+                    sleep(1);
                     $retry = true;
                 } else {
                     error_log("  └ FAIL - could not be validated");
@@ -121,6 +122,7 @@ class Connection extends DBALConnection implements DriverConnection
                 if ($this->validateReconnectAttempt($e, $attempt)) {
                     $this->close();
                     $attempt++;
+                    sleep(1);
                     $retry = true;
                 } else {
                     throw $e;
@@ -147,6 +149,7 @@ class Connection extends DBALConnection implements DriverConnection
                 if ($this->validateReconnectAttempt($e, $attempt)) {
                     $this->close();
                     $attempt++;
+                    sleep(1);
                     $retry = true;
                 } else {
                     throw $e;
