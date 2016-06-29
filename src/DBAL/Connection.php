@@ -199,7 +199,7 @@ class Connection extends DBALConnection implements DriverConnection
      */
     public function validateReconnectAttempt(DBALException $e, $attempt)
     {
-        if (!$this->getTransactionNestingLevel()) {
+        if ($this->getTransactionNestingLevel()) {
             return false;
         }
 
