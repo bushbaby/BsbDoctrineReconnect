@@ -2,19 +2,20 @@
 
 namespace BsbDoctrineReconnect\DBAL;
 
+use BsbDoctrineReconnect\DBAL\Driver as DriverInterface;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection as DBALConnection;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Driver\PDOMySql\Driver;
-
+use Doctrine\DBAL\Driver\Connection as DriverConnection;
+use Doctrine\DBAL\Driver\PDOMySql\Driver as DBALDriver;
 /**
  * Class Connection
  *
  * @package BsbDoctrineReconnect\DBAL
  */
-class Connection extends DBALConnection
+class Connection extends DBALConnection implements DriverConnection
 {
     /**
      * @var int
@@ -26,11 +27,11 @@ class Connection extends DBALConnection
      */
     public function __construct(
         array $params,
-        Driver $driver,
+        DBALDriver $driver,
         Configuration $config = null,
         EventManager $eventManager = null
     ) {
-        if (method_exists($driver, 'getReconnectExceptions')) {
+        if ($driver instanceof DriverInterface) {
             if (count($driver->getReconnectExceptions()) && isset($params['driverOptions']['x_reconnect_attempts'])) {
                 $this->reconnectAttempts = (int) $params['driverOptions']['x_reconnect_attempts'];
             }
