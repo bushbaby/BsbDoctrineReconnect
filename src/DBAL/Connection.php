@@ -10,6 +10,7 @@ use Doctrine\DBAL\Connection as DBALConnection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use Doctrine\DBAL\Driver\PDOMySql\Driver as DBALDriver;
+
 /**
  * Class Connection
  *
